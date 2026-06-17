@@ -1,0 +1,7 @@
+analysis,finding,member_rush_pct,casual_rush_pct,chi2_statistic,p_value,significant,member_median_min,casual_median_min,mannwhitney_u,weekday_casual_pct,weekend_casual_pct,dockless_casual_pct,docked_casual_pct,winter_pct,spring_pct,summer_pct,autumn_pct,peak_to_trough_ratio,member_electric_pct,casual_electric_pct
+commuting_patterns,会员在高峰时段骑行比例显著高于散客,40.6,30.9,155.3,1.19e-35,True,,,,,,,,,,,,,,
+duration_difference,散客骑行时长显著长于会员,,,,1.79e-128,True,8.8,11.8,44273346.0,,,,,,,,,,,
+weekend_effect,周末散客占比显著高于工作日,,,197.9,5.95e-45,True,,,,26.4,36.8,,,,,,,,,
+dockless_pattern,无桩骑行中散客比例更高,,,201.4,1.06e-45,True,,,,,,20.1,31.8,,,,,,,
+seasonal_shift,散客占比呈现明显的季节性波动，夏季最高冬季最低,,,,,,,,,,,,,21.5,30.7,31.5,29.5,1.46,,
+electric_preference,散客更偏好电动单车,,,49.1,2.44e-12,True,,,,,,,,,,,,,64.7,59.3

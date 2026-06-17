@@ -1,0 +1,6 @@
+metric,before,after
+total_rows,19999.0,18686.0
+missing_start_station_pct,25.166258312915645,20.90870170180884
+missing_end_station_pct,26.08630431521576,21.48667451568019
+duration_lt_1min_pct,2.660133006650333,0.0
+duration_gt_24h_pct,0.08000400020001,0.0

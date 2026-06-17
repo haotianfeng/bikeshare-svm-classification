@@ -1,0 +1,34 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+
+# Node modules (from tooling)
+node_modules/
+package-lock.json
+
+# Raw CSV data (1.1 GB total — too large for GitHub)
+2025*-capitalbikeshare-tripdata/
+
+# macOS metadata folders inside data directories
+__MACOSX/
+
+# Temporary files
+~$*
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Claude Code
+.claude/
