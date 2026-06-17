@@ -6,7 +6,7 @@
 
 > 使用支持向量机（SVM）对 Washington Capital Bikeshare 用户类型进行二分类预测 — member vs casual。
 
-**最终结果**: Test Accuracy **73.27%** | ROC-AUC **0.69** | F1 Macro **0.60**
+**最终结果**: Test Accuracy **73.27%** | ROC-AUC **0.69** | F1 Weighted **0.70** | F1 Macro **0.60**
 
 ---
 
@@ -116,7 +116,10 @@ python main.py
 | 指标 | 值 |
 |------|-----|
 | Test Accuracy | **73.27%** |
-| F1 (Weighted) | 0.70 |
+| F1 (Weighted) | 0.6969 |
+| F1 (Macro) | 0.6030 |
+| F1 (Member) | 0.8300 |
+| F1 (Casual) | 0.3760 |
 | Member Recall | 92.28% |
 | Casual Recall | 27.46% |
 | ROC-AUC | 0.69 |
