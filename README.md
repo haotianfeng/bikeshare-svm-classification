@@ -35,27 +35,46 @@
 
 ```
 ├── main.py                          # 主入口，完整 12 步流程编排
+├── requirements.txt                 # Python 依赖列表
 ├── src/
+│   ├── __init__.py                  # 包初始化
 │   ├── config.py                    # 全局配置 (路径、超参数、内存优化)
 │   ├── data_loader.py               # CSV 文件发现与月度加载
 │   ├── sampling.py                  # 每月分层抽样 (chunksize 分块)
 │   ├── cleaning.py                  # DST 修复、IQR 缩尾、Haversine 距离
 │   ├── feature_engineering.py       # 循环编码、频率编码、对数变换
 │   ├── eda.py                       # 15 张探索性数据分析图
-│   ├── feature_selection.py         # MI + 卡方 + RF 集成排名
+│   ├── feature_selection.py         # MI + 卡方 + RF 集成排名 (4 张图)
 │   ├── preprocessing.py             # StandardScaler + 80/20 分层划分
-│   ├── train.py                     # 3 种 SVM + GridSearchCV (f1_macro)
-│   ├── evaluate.py                  # 混淆矩阵、ROC、PR、学习曲线
-│   ├── feature_analysis.py          # 排列重要性 + 逻辑回归系数
+│   ├── train.py                     # 基准模型对比 + GridSearchCV + 最终训练
+│   ├── evaluate.py                  # 混淆矩阵、ROC、PR、学习曲线 (5 张图)
+│   ├── feature_analysis.py          # 排列重要性 + 逻辑回归系数 (2 张图)
 │   ├── findings.py                  # 6 项统计检验 (卡方 / Mann-Whitney U)
 │   └── visualize.py                 # 中文字体、seaborn 样式、300 DPI 保存
 ├── outputs/
 │   ├── figures/                     # 27 张高质量图表 (300 DPI PNG)
-│   ├── tables/                      # 14 张数据表 (CSV)
-│   └── models/                      # 训练好的模型 + scaler (joblib)
-├── report/                          # 实验报告 (.docx)
-└──  代码过程与原理解释.md               # 深度技术文档 (推荐阅读)
-
+│   │   ├── 01-15_*.png              #   Step 4  EDA 探索性分析
+│   │   ├── feature_ranking_*.png    #   Step 5  特征选择排名
+│   │   ├── model_comparison.png     #   Step 8  模型对比
+│   │   ├── eval_*.png               #   Step 10 模型评估
+│   │   └── feature_*.png            #   Step 11 特征重要性
+│   ├── tables/                      # 13 张数据表 (CSV)
+│   │   ├── sampling_summary.csv     #   抽样汇总
+│   │   ├── cleaning_stats.csv       #   清洗统计
+│   │   ├── baseline_model_comparison.csv  # 基准模型对比
+│   │   ├── feature_ranking_*.csv    #   特征排名 (MI/卡方/RF/集成)
+│   │   ├── grid_search_results.csv  #   网格搜索结果
+│   │   ├── final_metrics.csv        #   最终评估指标
+│   │   ├── classification_report.csv     # 分类报告
+│   │   ├── permutation_importance.csv    # 排列重要性
+│   │   ├── logistic_regression_coeffs.csv # 逻辑回归系数
+│   │   └── interesting_findings.csv      # 统计发现汇总
+│   └── models/                      # 3 个序列化文件 (joblib)
+│       ├── best_svm_model.joblib    #   最优 SVM 模型
+│       ├── scaler.joblib            #   StandardScaler
+│       └── feature_names.joblib     #   特征名列表
+├── 代码过程与原理解释.md              # 深度技术文档 (推荐阅读)
+└── README.md                        # 本文件
 ```
 
 ---
@@ -65,7 +84,7 @@
 ### 环境要求
 
 - Python 3.11+
-- 依赖: `numpy`, `pandas`, `scikit-learn`, `matplotlib`, `seaborn`
+- 依赖详见 `requirements.txt`
 
 ### 运行
 
@@ -75,11 +94,11 @@ python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
 # 2. 安装依赖
-pip install numpy pandas scikit-learn matplotlib seaborn
+pip install -r requirements.txt
 
 # 3. 下载数据
 # 从 https://capitalbikeshare.com/system-data 下载 2025 年 1-12 月 CSV
-# 放入 2025MM-capitalbikeshare-tripdata/ 目录
+# 放入项目根目录，文件夹命名格式: 2025MM-capitalbikeshare-tripdata/
 
 # 4. 运行完整流水线
 python main.py
