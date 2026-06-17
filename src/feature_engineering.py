@@ -4,13 +4,13 @@ from src.config import TARGET_MAP
 
 
 def _cyclic_encode(values: pd.Series, period: float) -> tuple[np.ndarray, np.ndarray]:
-    """Map a cyclic variable (0..period-1) to (sin, cos) coordinates."""
+    """将循环变量（取值范围 0..period-1）映射到 (sin, cos) 坐标。"""
     scaled = 2 * np.pi * values / period
     return np.sin(scaled), np.cos(scaled)
 
 
 def extract_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Create cyclic + binary temporal features from started_at."""
+    """从 started_at 中提取循环编码和二元时间特征。"""
     feats = pd.DataFrame(index=df.index)
 
     hour = df["started_at"].dt.hour.astype(float)
@@ -34,7 +34,7 @@ def extract_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_trip_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Create trip-based features."""
+    """提取骑行相关的数值特征。"""
     feats = pd.DataFrame(index=df.index)
     feats["duration_minutes_log"] = np.log1p(df["duration_minutes"])
     feats["haversine_distance_km"] = df["haversine_distance_km"]
@@ -43,10 +43,10 @@ def extract_trip_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_station_frequency_encoding(df: pd.DataFrame) -> pd.DataFrame:
-    """Frequency-encode start and end stations.
+    """对起止站点进行频率编码。
 
-    A station's frequency = rides from/to that station / total rides.
-    Missing stations get 0.
+    站点频率 = 该站点的骑行次数 / 总骑行次数。
+    缺失站点频率记为 0。
     """
     feats = pd.DataFrame(index=df.index)
     total_rides = len(df)
@@ -68,18 +68,18 @@ def compute_station_frequency_encoding(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_composite_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Create composite derived features."""
+    """提取复合衍生特征。"""
     feats = pd.DataFrame(index=df.index)
     feats["avg_speed_kmh"] = df["avg_speed_kmh"]
     return feats
 
 
 def engineer_all_features(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, list[str]]:
-    """Run all feature engineering steps and return (X, y, feature_names).
+    """执行全部特征工程步骤，返回 (X, y, feature_names)。
 
-    X: (n_samples, n_features) float64 array
-    y: (n_samples,) int array (0=casual, 1=member)
-    feature_names: list of feature column names
+    X: (样本数, 特征数) float64 数组
+    y: (样本数,) int 数组 (0=casual, 1=member)
+    feature_names: 特征列名列表
     """
     temporal = extract_temporal_features(df)
     trip = extract_trip_features(df)
@@ -91,7 +91,7 @@ def engineer_all_features(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, lis
     feature_names = list(feature_df.columns)
     y = df["member_casual"].map(TARGET_MAP).values.astype(int)
 
-    assert not np.any(np.isnan(X)), "NaN values found in feature matrix"
-    assert not np.any(np.isinf(X)), "Inf values found in feature matrix"
+    assert not np.any(np.isnan(X)), "特征矩阵中存在 NaN 值"
+    assert not np.any(np.isinf(X)), "特征矩阵中存在 Inf 值"
 
     return X, y, feature_names

@@ -13,7 +13,7 @@ from src.visualize import setup_chinese_font, set_style, save_figure
 
 
 def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray, y_proba: np.ndarray | None = None) -> dict:
-    """Compute comprehensive evaluation metrics."""
+    """计算全面评估指标，包括精确率、召回率、F1（每类 + 加权平均）。"""
     metrics = {
         "accuracy": accuracy_score(y_true, y_pred),
         "precision_weighted": precision_score(y_true, y_pred, average="weighted"),
@@ -34,7 +34,7 @@ def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray, y_proba: np.ndarray 
 def plot_confusion_matrix(
     y_true: np.ndarray, y_pred: np.ndarray, output_dir: str = FIGURES_DIR
 ) -> str:
-    """Plot normalized + raw confusion matrix."""
+    """绘制原始计数 + 归一化混淆矩阵（并排）。"""
     set_style()
     setup_chinese_font()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
@@ -61,7 +61,7 @@ def plot_confusion_matrix(
 def plot_roc_curve(
     y_true: np.ndarray, y_proba: np.ndarray, output_dir: str = FIGURES_DIR
 ) -> str:
-    """Plot ROC curve with AUC."""
+    """绘制 ROC 曲线并标注 AUC 值。"""
     set_style()
     setup_chinese_font()
     fig, ax = plt.subplots(figsize=(8, 8))
@@ -83,7 +83,7 @@ def plot_roc_curve(
 def plot_precision_recall_curve(
     y_true: np.ndarray, y_proba: np.ndarray, output_dir: str = FIGURES_DIR
 ) -> str:
-    """Plot Precision-Recall curve."""
+    """绘制精确率-召回率曲线并标注基线。"""
     set_style()
     setup_chinese_font()
     fig, ax = plt.subplots(figsize=(8, 8))
@@ -107,7 +107,7 @@ def plot_precision_recall_curve(
 def plot_classification_report_heatmap(
     y_true: np.ndarray, y_pred: np.ndarray, output_dir: str = FIGURES_DIR
 ) -> str:
-    """Visualize classification report as a heatmap."""
+    """以热力图形式可视化分类报告。"""
     set_style()
     setup_chinese_font()
     report = classification_report(
@@ -144,7 +144,7 @@ def plot_classification_report_heatmap(
 def plot_learning_curve(
     model, X: np.ndarray, y: np.ndarray, output_dir: str = FIGURES_DIR
 ) -> str:
-    """Plot learning curve: train vs CV score vs training size."""
+    """绘制学习曲线：训练集和交叉验证得分随训练样本量的变化。"""
     set_style()
     setup_chinese_font()
     train_sizes_abs, train_scores, val_scores = learning_curve(
@@ -174,7 +174,7 @@ def plot_learning_curve(
 
 
 def save_metrics_table(metrics: dict, output_dir: str = TABLES_DIR) -> str:
-    """Save all metrics to CSV."""
+    """将所有评估指标保存为 CSV 文件。"""
     df = pd.DataFrame([metrics])
     filepath = f"{output_dir}/final_metrics.csv"
     df.to_csv(filepath, index=False)
@@ -185,7 +185,7 @@ def run_full_evaluation(
     model, X_test: np.ndarray, y_test: np.ndarray,
     output_dir: str = FIGURES_DIR,
 ) -> dict:
-    """Run comprehensive evaluation: metrics, confusion matrix, ROC, PR, learning curve."""
+    """执行完整评估流程：指标计算、混淆矩阵、ROC、PR 曲线、学习曲线。"""
     y_pred = model.predict(X_test)
     y_proba = model.predict_proba(X_test)
 

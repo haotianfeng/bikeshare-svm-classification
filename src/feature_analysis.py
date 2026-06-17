@@ -11,7 +11,7 @@ def compute_permutation_importance(
     model, X: np.ndarray, y: np.ndarray, feature_names: list[str],
     n_repeats: int = 20,
 ) -> pd.DataFrame:
-    """Compute permutation importance with multiple repeats for stability."""
+    """多次重复计算排列重要性以获得稳定的重要性估计。"""
     result = permutation_importance(
         model, X, y, n_repeats=n_repeats, random_state=RANDOM_SEED,
         n_jobs=N_JOBS, scoring="accuracy",
@@ -29,7 +29,7 @@ def compute_permutation_importance(
 def logistic_regression_coefficients(
     X_train: np.ndarray, y_train: np.ndarray, feature_names: list[str],
 ) -> pd.DataFrame:
-    """Train LogisticRegression and extract standardized coefficients."""
+    """训练逻辑回归并提取标准化特征系数。"""
     lr = LogisticRegression(
         C=1.0, class_weight="balanced",
         max_iter=5000, random_state=RANDOM_SEED,
@@ -49,7 +49,7 @@ def plot_permutation_importance(
     importance_df: pd.DataFrame,
     output_dir: str = FIGURES_DIR,
 ) -> str:
-    """Plot permutation importance bar chart with error bars (top 15)."""
+    """绘制排列重要性柱状图（含误差线），展示 Top 15 特征。"""
     set_style()
     setup_chinese_font()
     fig, ax = plt.subplots(figsize=(10, 7))
@@ -73,7 +73,7 @@ def plot_logistic_coefficients(
     coef_df: pd.DataFrame,
     output_dir: str = FIGURES_DIR,
 ) -> str:
-    """Plot logistic regression coefficient magnitudes."""
+    """绘制逻辑回归系数大小和方向（正=会员倾向，负=散客倾向）。"""
     set_style()
     setup_chinese_font()
     fig, ax = plt.subplots(figsize=(10, 7))
@@ -96,7 +96,7 @@ def run_feature_analysis(
     X_train: np.ndarray, y_train: np.ndarray,
     feature_names: list[str],
 ) -> dict:
-    """Run permutation importance + logistic regression comparison."""
+    """执行排列重要性分析和逻辑回归系数对比。"""
     perm_df = compute_permutation_importance(model, X_test, y_test, feature_names)
     lr_df = logistic_regression_coefficients(X_train, y_train, feature_names)
 

@@ -1,9 +1,9 @@
-"""Memory-optimized stratified sampling by month.
+"""内存优化的按月分层抽样模块。
 
-Key optimizations vs original:
-1. Only reads columns needed for sampling (member_casual, started_at) plus key cols
-2. Uses chunked reading for large files to avoid loading full month into memory
-3. Calls gc.collect() after each month to release memory immediately
+相比原始版本的关键优化：
+1. 只读取抽样所需的列（member_casual, started_at）及其它关键列
+2. 对大文件使用分块读取，避免将整月数据一次性加载到内存
+3. 每月处理完成后调用 gc.collect() 立即释放内存
 """
 
 import gc
@@ -27,7 +27,7 @@ SAMPLING_COLS = ["member_casual"]
 
 
 def _count_lines_fast(path: str) -> int:
-    """Count lines in a CSV file quickly (for proportional allocation)."""
+    """快速统计 CSV 文件行数，用于按比例分配抽样名额。"""
     n = 0
     with open(path, "rb") as f:
         # 使用缓冲二进制读取以提速
@@ -43,11 +43,10 @@ def _load_and_sample_month(
     month_samples: int,
     random_seed: int,
 ) -> pd.DataFrame:
-    """Load one month's CSV with only needed columns, then stratified-sample.
+    """加载单月 CSV（仅读所需列），然后做分层抽样。
 
-    Uses chunked reading for large files: reads in chunks of 100k rows,
-    samples within each chunk, and concatenates. This avoids loading a
-    700k-row DataFrame into memory at once.
+    对大文件使用分块读取：每次读取 10 万行，块内抽样后合并。
+    这样避免一次性将 70 万行 DataFrame 加载到内存中。
     """
     # 基于目标样本数确定分块大小
     # 我们抽样约1-10%的行，所以10万行的chunk → 每块抽1-1万条
@@ -98,13 +97,12 @@ def stratified_sample_by_month(
     total_samples: int = TOTAL_SAMPLE_SIZE,
     random_seed: int = RANDOM_SEED,
 ) -> pd.DataFrame:
-    """Load all 12 months, sample proportionally with per-month stratification.
+    """加载全部 12 个月数据，按比例分层抽样。
 
-    Each month gets sample rows proportional to its original volume.
-    Within each month, stratified sampling preserves the member/casual ratio.
+    每月按照原始数据量的百分比分配抽样名额。
+    每月内部使用分层抽样，保证 member/casual 比例与原始分布一致。
 
-    Memory-optimized: only reads needed columns, uses chunked reading,
-    and forces garbage collection after each month.
+    内存优化：仅读取所需列，使用分块读取，每月处理后强制垃圾回收。
     """
     files = discover_csv_files(data_dir)
 
@@ -162,7 +160,7 @@ def stratified_sample_by_month(
 
 
 def save_sampling_summary(sampled_df: pd.DataFrame, output_dir: str = TABLES_DIR) -> None:
-    """Save monthly sampling summary table."""
+    """保存每月抽样汇总表到 CSV。"""
     import os
 
     summary = (

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""SVM Bike Share User Classification — Full Pipeline
+"""SVM 共享单车用户分类 — 完整实验流程
 
-Steps 1–12 as defined in CLAUDE.md.
-Run: python main.py
+按照 CLAUDE.md 定义的 12 个步骤依次执行。
+运行: python main.py
 """
 
 import sys
@@ -39,7 +39,7 @@ from src.visualize import setup_chinese_font, set_style
 
 
 def _mem_mb() -> str:
-    """Return current process memory usage as a human-readable string."""
+    """返回当前进程的内存占用量，格式为人类可读的字符串。"""
     try:
         import psutil
         p = psutil.Process(os.getpid())

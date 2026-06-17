@@ -13,7 +13,7 @@ SEASONS = {
 
 
 def analyze_commuting_patterns(df: pd.DataFrame) -> dict:
-    """Test whether members commute more than casual users during rush hours."""
+    """卡方检验：会员是否比散客更集中在高峰时段骑行。"""
     hour = df["started_at"].dt.hour
     dow = df["started_at"].dt.dayofweek
     is_weekday = dow < 5
@@ -49,7 +49,7 @@ def analyze_commuting_patterns(df: pd.DataFrame) -> dict:
 
 
 def test_duration_difference(df: pd.DataFrame) -> dict:
-    """Mann-Whitney U test on ride duration between member and casual."""
+    """Mann-Whitney U 检验：散客骑行时长是否显著长于会员。"""
     member_dur = df[df["member_casual"] == "member"]["duration_minutes"]
     casual_dur = df[df["member_casual"] == "casual"]["duration_minutes"]
 
@@ -66,7 +66,7 @@ def test_duration_difference(df: pd.DataFrame) -> dict:
 
 
 def analyze_weekend_effect(df: pd.DataFrame) -> dict:
-    """Test whether casual proportion is higher on weekends."""
+    """卡方检验：周末散客占比是否显著高于工作日。"""
     df_copy = df.copy()
     df_copy["is_weekend"] = df_copy["started_at"].dt.dayofweek >= 5
     df_copy["is_casual"] = df_copy["member_casual"] == "casual"
@@ -91,7 +91,7 @@ def analyze_weekend_effect(df: pd.DataFrame) -> dict:
 
 
 def analyze_dockless_pattern(df: pd.DataFrame) -> dict:
-    """Test whether dockless rides are associated with casual users."""
+    """卡方检验：无桩骑行是否与散客用户相关联。"""
     df_copy = df.copy()
     df_copy["is_dockless"] = df_copy["start_station_name"].isna()
     df_copy["is_casual"] = df_copy["member_casual"] == "casual"
@@ -116,7 +116,7 @@ def analyze_dockless_pattern(df: pd.DataFrame) -> dict:
 
 
 def analyze_seasonal_shift(df: pd.DataFrame) -> dict:
-    """Analyze seasonal shift in casual proportion."""
+    """分析散客占比的季节性波动。"""
     df_copy = df.copy()
     df_copy["season"] = df_copy["started_at"].dt.month.map(SEASONS)
     seasonal_casual = df_copy.groupby("season")["member_casual"].apply(
@@ -138,7 +138,7 @@ def analyze_seasonal_shift(df: pd.DataFrame) -> dict:
 
 
 def analyze_electric_preference(df: pd.DataFrame) -> dict:
-    """Test whether casual users prefer electric bikes more."""
+    """卡方检验：散客是否更偏好电动单车。"""
     cross = pd.crosstab(
         df["rideable_type"].map({"electric_bike": "电动单车", "classic_bike": "经典单车"}),
         df["member_casual"].map({"member": "会员", "casual": "散客"}),
@@ -163,7 +163,7 @@ def analyze_electric_preference(df: pd.DataFrame) -> dict:
 
 
 def generate_findings_table(all_findings: dict, output_dir: str = TABLES_DIR) -> str:
-    """Save all findings as a structured table."""
+    """将所有统计发现保存为结构化表格。"""
     rows = []
     for key, f in all_findings.items():
         flat = {"analysis": key}
@@ -180,7 +180,7 @@ def run_all_findings(
     df: pd.DataFrame,
     output_dir: str = TABLES_DIR,
 ) -> dict:
-    """Run all statistical analyses and return findings dict."""
+    """执行全部 6 项统计分析并返回发现字典。"""
     findings = {
         "commuting_patterns": analyze_commuting_patterns(df),
         "duration_difference": test_duration_difference(df),

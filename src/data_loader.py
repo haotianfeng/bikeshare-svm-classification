@@ -5,7 +5,7 @@ from src.config import RAW_DATA_DIR
 
 
 def discover_csv_files(data_dir: str | None = None) -> dict[str, str]:
-    """Return {month_label: csv_path} for all 12 monthly tripdata files."""
+    """在数据目录中发现全部 12 个月的 CSV 文件，返回 {月份标签: csv路径} 字典。"""
     if data_dir is None:
         data_dir = RAW_DATA_DIR
     pattern = os.path.join(data_dir, "2025*-capitalbikeshare-tripdata", "*.csv")
@@ -18,7 +18,7 @@ def discover_csv_files(data_dir: str | None = None) -> dict[str, str]:
 
 
 def load_single_month(csv_path: str) -> pd.DataFrame:
-    """Load one monthly CSV, parse timestamps, add month column."""
+    """加载单月 CSV 文件，解析时间戳，添加月份列。"""
     df = pd.read_csv(csv_path)
     df["started_at"] = pd.to_datetime(df["started_at"])
     df["ended_at"] = pd.to_datetime(df["ended_at"])
@@ -27,7 +27,7 @@ def load_single_month(csv_path: str) -> pd.DataFrame:
 
 
 def load_all_months(data_dir: str | None = None) -> pd.DataFrame:
-    """Load all 12 months, concatenate, return combined DataFrame."""
+    """加载全部 12 个月数据并拼接为一个 DataFrame。"""
     files = discover_csv_files(data_dir)
     frames = []
     for month, path in files.items():
@@ -38,7 +38,7 @@ def load_all_months(data_dir: str | None = None) -> pd.DataFrame:
 
 
 def compute_monthly_stats(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute per-month row counts and class distribution."""
+    """统计每月行数和 member/casual 类别比例。"""
     stats = (
         df.groupby("month")
         .agg(

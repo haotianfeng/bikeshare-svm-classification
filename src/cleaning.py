@@ -11,9 +11,9 @@ from src.config import (
 
 
 def fix_dst_negative_durations(df: pd.DataFrame) -> pd.DataFrame:
-    """Correct negative durations caused by DST clock rollback in November.
+    """修正因 11 月夏令时回拨导致的负骑行时长。
 
-    Adds 3600 seconds (1 hour) to negative durations.
+    将负时长加回 3600 秒（1 小时）以纠正 DST 时钟误差。
     """
     mask = df["ended_at"] < df["started_at"]
     if mask.any():
@@ -24,7 +24,7 @@ def fix_dst_negative_durations(df: pd.DataFrame) -> pd.DataFrame:
 def compute_haversine_km(
     lat1: pd.Series, lng1: pd.Series, lat2: pd.Series, lng2: pd.Series
 ) -> np.ndarray:
-    """Compute haversine distance in km between two sets of lat/lng coordinates."""
+    """使用 Haversine 公式计算两组经纬度坐标之间的球面距离（单位 km）。"""
     r = 6371.0  # 地球半径，单位km
     lat1_r = np.radians(lat1.values)
     lat2_r = np.radians(lat2.values)
@@ -37,9 +37,10 @@ def compute_haversine_km(
 
 
 def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
-    """Full data cleaning pipeline.
+    """完整的数据清洗流水线。
 
-    Returns cleaned DataFrame.
+    按顺序执行：DST 修正 → 时长/距离计算 → 移除极端值 →
+    IQR 缩尾 → 计算平均速度，返回清洗后的 DataFrame。
     """
     initial_rows = len(df)
 
@@ -100,7 +101,7 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def report_cleaning_stats(before: pd.DataFrame, after: pd.DataFrame) -> pd.DataFrame:
-    """Generate before/after cleaning comparison table."""
+    """生成清洗前后对比统计表并保存为 CSV。"""
     import os
 
     stats = pd.DataFrame(

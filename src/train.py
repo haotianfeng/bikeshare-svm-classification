@@ -29,7 +29,7 @@ def train_baseline_models(
     X_test: np.ndarray,
     y_test: np.ndarray,
 ) -> dict:
-    """Train 3 baseline SVM models and compare performance."""
+    """训练 3 个基准 SVM 模型（LinearSVC / Poly / RBF）并对比性能。"""
     models = {
         "LinearSVC": LinearSVC(
             C=1.0, max_iter=5000, dual=False, class_weight="balanced",
@@ -68,7 +68,7 @@ def run_grid_search(
     X_train: np.ndarray,
     y_train: np.ndarray,
 ) -> GridSearchCV:
-    """Run GridSearchCV on SVC with RBF kernel."""
+    """使用 5 折交叉验证对 RBF 核 SVC 执行网格搜索。"""
     svc = SVC(
         class_weight="balanced", random_state=RANDOM_SEED, cache_size=SVC_CACHE_SIZE
     )
@@ -97,7 +97,7 @@ def run_extended_grid_search(
     X_train: np.ndarray,
     y_train: np.ndarray,
 ) -> GridSearchCV:
-    """Run extended search if best C is at boundary."""
+    """当最优 C 值位于搜索边界时执行扩展网格搜索。"""
     svc = SVC(
         class_weight="balanced", random_state=RANDOM_SEED, cache_size=SVC_CACHE_SIZE
     )
@@ -120,8 +120,8 @@ def train_final_model(
     y_train: np.ndarray,
     best_params: dict,
 ) -> CalibratedClassifierCV:
-    """Train the final SVC with best hyperparameters, wrapped in CalibratedClassifierCV
-    for probability outputs (Platt scaling via 5-fold internal CV)."""
+    """使用最优超参数训练最终 SVC 模型，外层包裹 CalibratedClassifierCV
+    以输出校准概率（内部使用 5 折 CV 做 Platt Scaling）。"""
     svc = SVC(
         kernel="rbf",
         C=best_params["C"],
@@ -141,7 +141,7 @@ def plot_model_comparison(
     test_accuracy: float,
     output_dir: str = FIGURES_DIR,
 ) -> str:
-    """Plot bar chart comparing all models."""
+    """绘制所有模型的准确率对比柱状图。"""
     set_style()
     setup_chinese_font()
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -164,7 +164,7 @@ def save_model(
     feature_names: list[str],
     output_dir: str = MODELS_DIR,
 ) -> tuple[str, str]:
-    """Save trained model and feature names."""
+    """保存训练好的模型和特征名列表到 joblib 文件。"""
     model_path = os.path.join(output_dir, "best_svm_model.joblib")
     names_path = os.path.join(output_dir, "feature_names.joblib")
     joblib.dump(model, model_path)

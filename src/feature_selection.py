@@ -11,7 +11,7 @@ from src.visualize import setup_chinese_font, set_style, save_figure
 def mutual_information_ranking(
     X: np.ndarray, y: np.ndarray, feature_names: list[str]
 ) -> pd.DataFrame:
-    """Compute Mutual Information scores and return ranked DataFrame."""
+    """计算互信息得分并按降序排列，返回排序后的 DataFrame。"""
     mi_scores = mutual_info_classif(X, y, random_state=RANDOM_SEED)
     df = pd.DataFrame(
         {"feature": feature_names, "mutual_information": mi_scores}
@@ -24,7 +24,7 @@ def mutual_information_ranking(
 def chi_square_ranking(
     X: np.ndarray, y: np.ndarray, feature_names: list[str]
 ) -> pd.DataFrame:
-    """Compute Chi-Square scores (after MinMax scaling to [0,1]) and return ranked DF."""
+    """计算卡方得分（先 MinMax 缩放到 [0,1]），返回排序后的 DataFrame。"""
     scaler = MinMaxScaler()
     X_01 = scaler.fit_transform(X)
     chi2_scores, p_values = chi2(X_01, y)
@@ -41,7 +41,7 @@ def random_forest_importance(
     y: np.ndarray,
     feature_names: list[str],
 ) -> pd.DataFrame:
-    """Train a Random Forest (auxiliary only) to get Gini importance."""
+    """训练随机森林（仅作辅助分析），提取 Gini 不纯度重要性。"""
     rf = RandomForestClassifier(
         n_estimators=150, max_depth=10, random_state=RANDOM_SEED, n_jobs=N_JOBS
     )
@@ -57,7 +57,7 @@ def random_forest_importance(
 def ensemble_feature_ranking(
     rankings: list[pd.DataFrame],
 ) -> pd.DataFrame:
-    """Average normalized ranks from multiple methods into consensus ranking."""
+    """对多种方法的排名取平均，生成综合共识排名。"""
     # 每个输入的 DataFrame 包含 'feature' 和 'rank_*' 列
     merged = None
     rank_cols = []
@@ -83,7 +83,7 @@ def plot_feature_rankings(
     ensemble_df: pd.DataFrame,
     output_dir: str = FIGURES_DIR,
 ) -> list[str]:
-    """Plot 3 individual ranking charts + 1 ensemble chart."""
+    """生成 3 张单独排名图 + 1 张集成排名图。"""
     set_style()
     setup_chinese_font()
     paths = []
@@ -145,7 +145,7 @@ import seaborn as sns
 def run_feature_selection(
     X: np.ndarray, y: np.ndarray, feature_names: list[str]
 ) -> dict:
-    """Run all three feature selection methods + ensemble."""
+    """依次执行互信息、卡方检验、随机森林三种特征选择方法并集成排名。"""
     mi_df = mutual_information_ranking(X, y, feature_names)
     chi2_df = chi_square_ranking(X, y, feature_names)
     rf_df = random_forest_importance(X, y, feature_names)

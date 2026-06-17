@@ -15,10 +15,10 @@ SEASON_ORDER = ["春季", "夏季", "秋季", "冬季"]
 
 
 def _fig() -> tuple[plt.Figure, plt.Axes]:
-    """Create a standard figure with seaborn style + Chinese font applied.
+    """创建标准尺寸的 figure，应用 seaborn 样式和中文字体。
 
-    IMPORTANT: set_style() must come first (it calls sns.set_style which
-    resets fonts), then setup_chinese_font() re-applies Chinese font on top.
+    注意：必须先调 set_style()（seaborn 设置样式），再调
+    setup_chinese_font()（覆盖 seaborn 重置的字体配置）。
     """
     set_style()
     setup_chinese_font()
@@ -337,7 +337,7 @@ def run_all_eda(
     feature_cols: list[str] | None = None,
     output_dir: str = FIGURES_DIR,
 ) -> list[str]:
-    """Run all 15 EDA plots and return list of saved file paths."""
+    """依次执行全部 15 张 EDA 图并返回保存的文件路径列表。"""
     paths = []
     paths.append(plot_user_distribution(df, output_dir))
     paths.append(plot_monthly_volume(df, output_dir))

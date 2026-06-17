@@ -8,7 +8,7 @@ _FONT_NAME: str | None = None
 
 
 def _find_chinese_font() -> str | None:
-    """Find a Chinese font file on the system. Returns font name or None."""
+    """在系统中查找可用的中文字体文件，返回字体名，找不到则返回 None。"""
     # 策略1：用 fm.findfont 查找实际字体文件路径
     for font_name in CHINESE_FONT_CANDIDATES:
         try:
@@ -32,14 +32,14 @@ def _find_chinese_font() -> str | None:
 
 
 def _apply_chinese_font(font_name: str) -> None:
-    """Apply Chinese font to matplotlib rcParams."""
+    """将中文字体应用到 matplotlib 的全局 rcParams 配置。"""
     plt.rcParams["font.sans-serif"] = [font_name, "DejaVu Sans", "sans-serif"]
     plt.rcParams["font.family"] = "sans-serif"
     plt.rcParams["axes.unicode_minus"] = False
 
 
 def setup_chinese_font() -> str | None:
-    """Detect and configure a Chinese-capable font for matplotlib."""
+    """检测并配置 matplotlib 可用的中文字体，返回字体名。"""
     global _FONT_NAME
     if _FONT_NAME is not None:
         return _FONT_NAME
@@ -56,11 +56,11 @@ def setup_chinese_font() -> str | None:
 
 
 def set_style():
-    """Apply global seaborn style, then re-assert Chinese font.
+    """应用 seaborn 全局样式，然后重新覆盖中文字体。
 
-    IMPORTANT: sns.set_style() internally resets font.sans-serif to
-    ['Arial', ...], wiping our Chinese font.  We must re-apply the
-    Chinese font *after* seaborn to keep it.
+    重要：sns.set_style() 内部会重置 font.sans-serif 为
+    ['Arial', ...]，覆盖我们的中文字体设置。因此必须在
+    seaborn 设置完成之后重新应用中文字体。
     """
     global _FONT_NAME
     sns.set_style("whitegrid")
@@ -78,7 +78,7 @@ def set_style():
 
 
 def save_figure(fig: plt.Figure, filename: str, output_dir: str | None = None) -> str:
-    """Save figure at 300 DPI, return the filepath."""
+    """以 300 DPI 高分辨率保存图片，返回文件路径。"""
     from src.config import FIGURES_DIR
 
     if output_dir is None:
@@ -91,7 +91,7 @@ def save_figure(fig: plt.Figure, filename: str, output_dir: str | None = None) -
 
 
 def get_font_name() -> str | None:
-    """Return the detected Chinese font name, or None."""
+    """返回已检测到的中文字体名，尚未检测则触发检测。"""
     if _FONT_NAME is None:
         setup_chinese_font()
     return _FONT_NAME
