@@ -87,7 +87,7 @@ def run_grid_search(
     print(f"  Best CV score: {grid.best_score_:.4f}")
     print(f"  GridSearch completed in {elapsed:.1f}s ({elapsed/60:.1f} min)")
 
-    # Save CV results
+    # 保存交叉验证结果
     cv_df = pd.DataFrame(grid.cv_results_)
     cv_df.to_csv(f"{TABLES_DIR}/grid_search_results.csv", index=False)
     return grid

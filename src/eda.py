@@ -26,7 +26,7 @@ def _fig() -> tuple[plt.Figure, plt.Axes]:
     return fig, ax
 
 
-# ── Figure 1: User type distribution ───────────────
+# ── 图1：用户类型分布 ──────────────────────────────
 def plot_user_distribution(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     counts = df["member_casual"].value_counts()
@@ -44,7 +44,7 @@ def plot_user_distribution(df: pd.DataFrame, save_path: str | None = None) -> st
     return save_figure(fig, "01_user_distribution.png", save_path)
 
 
-# ── Figure 2: Monthly ride volume ──────────────────
+# ── 图2：月度骑行量分布 ────────────────────────────
 def plot_monthly_volume(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     monthly = (
@@ -63,7 +63,7 @@ def plot_monthly_volume(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "02_monthly_volume.png", save_path)
 
 
-# ── Figure 3: Hourly usage patterns ────────────────
+# ── 图3：各时段使用模式 ────────────────────────────
 def plot_hourly_pattern(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     df_copy = df.copy()
@@ -71,7 +71,7 @@ def plot_hourly_pattern(df: pd.DataFrame, save_path: str | None = None) -> str:
     hourly = (
         df_copy.groupby(["hour", "member_casual"]).size().unstack(fill_value=0)
     )
-    # Normalize to proportions
+    # 归一化为占比
     hourly_prop = hourly.div(hourly.sum(axis=1), axis=0)
     hourly_prop.columns = ["散客", "会员"]
     hourly_prop.plot(ax=ax, linewidth=2.5, marker="o", markersize=6)
@@ -83,7 +83,7 @@ def plot_hourly_pattern(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "03_hourly_pattern.png", save_path)
 
 
-# ── Figure 4: Day-of-week patterns ─────────────────
+# ── 图4：每日骑行分布 ──────────────────────────────
 def plot_daily_pattern(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     df_copy = df.copy()
@@ -101,7 +101,7 @@ def plot_daily_pattern(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "04_daily_pattern.png", save_path)
 
 
-# ── Figure 5: Seasonal usage ───────────────────────
+# ── 图5：季节性使用分布 ────────────────────────────
 def plot_seasonal_usage(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     df_copy = df.copy()
@@ -130,7 +130,7 @@ def plot_seasonal_usage(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "05_seasonal_usage.png", save_path)
 
 
-# ── Figure 6: Duration distribution ────────────────
+# ── 图6：骑行时长分布 ──────────────────────────────
 def plot_duration_distribution(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     for label, color, style in [
@@ -148,7 +148,7 @@ def plot_duration_distribution(df: pd.DataFrame, save_path: str | None = None) -
     return save_figure(fig, "06_duration_distribution.png", save_path)
 
 
-# ── Figure 7: Distance distribution ────────────────
+# ── 图7：骑行距离分布 ──────────────────────────────
 def plot_distance_distribution(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     for label, color, style in [
@@ -165,7 +165,7 @@ def plot_distance_distribution(df: pd.DataFrame, save_path: str | None = None) -
     return save_figure(fig, "07_distance_distribution.png", save_path)
 
 
-# ── Figure 8: Average speed boxplot ────────────────
+# ── 图8：平均速度箱线图 ────────────────────────────
 def plot_speed_boxplot(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     plot_df = df[["member_casual", "avg_speed_kmh"]].copy()
@@ -182,7 +182,7 @@ def plot_speed_boxplot(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "08_speed_boxplot.png", save_path)
 
 
-# ── Figure 9: Rush hour vs non-rush split ──────────
+# ── 图9：高峰时段分布 ──────────────────────────────
 def plot_rush_hour_split(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     df_copy = df.copy()
@@ -209,7 +209,7 @@ def plot_rush_hour_split(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "09_rush_hour_split.png", save_path)
 
 
-# ── Figure 10: Top 15 stations ─────────────────────
+# ── 图10：最热门起点站 Top 15 ──────────────────────
 def plot_top_stations(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     station_counts = (
@@ -217,7 +217,7 @@ def plot_top_stations(df: pd.DataFrame, save_path: str | None = None) -> str:
     )
     ax.barh(range(len(station_counts)), station_counts.values,
             color=sns.color_palette("viridis", len(station_counts)))
-    # Truncate long station names
+    # 截断过长的站点名
     names = [n[:30] if len(str(n)) > 30 else str(n) for n in station_counts.index]
     ax.set_yticks(range(len(names)))
     ax.set_yticklabels(names, fontsize=9)
@@ -226,7 +226,7 @@ def plot_top_stations(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "10_top_stations.png", save_path)
 
 
-# ── Figure 11: Bike type preference ────────────────
+# ── 图11：单车类型偏好 ─────────────────────────────
 def plot_bike_type(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     cross = (
@@ -244,7 +244,7 @@ def plot_bike_type(df: pd.DataFrame, save_path: str | None = None) -> str:
     return save_figure(fig, "11_bike_type.png", save_path)
 
 
-# ── Figure 12: Dockless ride proportion ────────────
+# ── 图12：无桩骑行用户分布 ────────────────────────
 def plot_dockless_proportion(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     df_copy = df.copy()
@@ -265,7 +265,7 @@ def plot_dockless_proportion(df: pd.DataFrame, save_path: str | None = None) -> 
     return save_figure(fig, "12_dockless_proportion.png", save_path)
 
 
-# ── Figure 13: Correlation heatmap ─────────────────
+# ── 图13：特征相关性热力图 ────────────────────────
 def plot_correlation_heatmap(
     df: pd.DataFrame, feature_cols: list[str], save_path: str | None = None
 ) -> str:
@@ -283,7 +283,7 @@ def plot_correlation_heatmap(
     return save_figure(fig, "13_correlation_heatmap.png", save_path)
 
 
-# ── Figure 14: Duration vs Distance scatter ────────
+# ── 图14：骑行时长 vs 骑行距离散点图 ──────────────
 def plot_duration_vs_distance(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     sample_plot = df.sample(min(5000, len(df)), random_state=42)
@@ -309,7 +309,7 @@ def plot_duration_vs_distance(df: pd.DataFrame, save_path: str | None = None) ->
     return save_figure(fig, "14_duration_vs_distance.png", save_path)
 
 
-# ── Figure 15: Monthly class balance trend ─────────
+# ── 图15：月度散客占比变化趋势 ────────────────────
 def plot_monthly_class_balance(df: pd.DataFrame, save_path: str | None = None) -> str:
     fig, ax = _fig()
     monthly_ratio = (
@@ -331,7 +331,7 @@ def plot_monthly_class_balance(df: pd.DataFrame, save_path: str | None = None) -
     return save_figure(fig, "15_monthly_class_balance.png", save_path)
 
 
-# ── Orchestrator ───────────────────────────────────
+# ── 编排函数 ────────────────────────────────────────
 def run_all_eda(
     df: pd.DataFrame,
     feature_cols: list[str] | None = None,

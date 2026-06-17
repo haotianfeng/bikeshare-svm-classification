@@ -1,33 +1,33 @@
 import os
 
-# ── Paths ──────────────────────────────────────────
+# ── 路径配置 ────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW_DATA_DIR = BASE_DIR  # 2025MM-capitalbikeshare-tripdata/ dirs are here
+RAW_DATA_DIR = BASE_DIR  # 2025MM-capitalbikeshare-tripdata/ 目录位于此路径下
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
 FIGURES_DIR = os.path.join(OUTPUT_DIR, "figures")
 TABLES_DIR = os.path.join(OUTPUT_DIR, "tables")
 MODELS_DIR = os.path.join(OUTPUT_DIR, "models")
 
-# ── Sampling ───────────────────────────────────────
+# ── 抽样配置 ────────────────────────────────────────
 TOTAL_SAMPLE_SIZE = 20000  # 2万条：更多散客样本可学，20K×17特征×8B=2.7MB，内存安全
 RANDOM_SEED = 42
 
-# ── Parallelism ─────────────────────────────────────
+# ── 并行控制 ────────────────────────────────────────
 # 关键修复：i9-13900HX有32逻辑核心，n_jobs=-1会fork 32个进程
 # 每个进程复制数据+SVC cache → 内存爆炸。限制为4个。
 N_JOBS = 4
 SVC_CACHE_SIZE = 500  # MB，每个SVC实例分配500MB
 
-# ── Train / Test Split ─────────────────────────────
+# ── 训练/测试划分 ────────────────────────────────────
 TEST_SIZE = 0.2
 
-# ── Cleaning Thresholds ────────────────────────────
+# ── 清洗阈值 ────────────────────────────────────────
 MIN_DURATION_MINUTES = 1
-MAX_DURATION_MINUTES = 1440  # 24 hours
+MAX_DURATION_MINUTES = 1440  # 24小时
 MIN_AVG_SPEED_KMH = 0.5
 MAX_AVG_SPEED_KMH = 50
 
-# ── GridSearchCV ───────────────────────────────────
+# ── 网格搜索 ────────────────────────────────────────
 CV_FOLDS = 5
 SCORING = "f1_macro"  # 用f1_macro替代accuracy：70/30不均衡数据下，
                        # f1_macro平等对待member和casual两个类别，
@@ -47,12 +47,12 @@ PARAM_GRID_EXTENDED = {
     "kernel": ["rbf"],
 }
 
-# ── Visualization ──────────────────────────────────
+# ── 可视化配置 ──────────────────────────────────────
 FIGURE_DPI = 300
 FIGURE_FORMAT = "png"
 CHINESE_FONT_CANDIDATES = ["SimHei", "Microsoft YaHei", "KaiTi", "FangSong"]
 
-# ── Target Encoding ────────────────────────────────
+# ── 目标变量编码 ────────────────────────────────────
 TARGET_MAP = {"casual": 0, "member": 1}
 
 

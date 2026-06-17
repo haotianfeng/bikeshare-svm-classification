@@ -58,7 +58,7 @@ def ensemble_feature_ranking(
     rankings: list[pd.DataFrame],
 ) -> pd.DataFrame:
     """Average normalized ranks from multiple methods into consensus ranking."""
-    # Each input df has 'feature' and 'rank_*' column
+    # 每个输入的 DataFrame 包含 'feature' 和 'rank_*' 列
     merged = None
     rank_cols = []
     for i, r in enumerate(rankings):
@@ -88,7 +88,7 @@ def plot_feature_rankings(
     setup_chinese_font()
     paths = []
 
-    # MI chart
+    # 互信息排名图
     fig, ax = plt.subplots(figsize=(10, 7))
     plot_df = mi_df.head(15).iloc[::-1]
     ax.barh(range(len(plot_df)), plot_df["mutual_information"].values,
@@ -99,7 +99,7 @@ def plot_feature_rankings(
     ax.set_xlabel("互信息得分", fontsize=12)
     paths.append(save_figure(fig, "feature_ranking_mi.png", output_dir))
 
-    # Chi2 chart
+    # 卡方检验排名图
     fig, ax = plt.subplots(figsize=(10, 7))
     plot_df = chi2_df.head(15).iloc[::-1]
     ax.barh(range(len(plot_df)), plot_df["chi2_score"].values,
@@ -110,7 +110,7 @@ def plot_feature_rankings(
     ax.set_xlabel("卡方值", fontsize=12)
     paths.append(save_figure(fig, "feature_ranking_chi2.png", output_dir))
 
-    # RF chart
+    # 随机森林排名图
     fig, ax = plt.subplots(figsize=(10, 7))
     plot_df = rf_df.head(15).iloc[::-1]
     ax.barh(range(len(plot_df)), plot_df["rf_importance"].values,
@@ -121,7 +121,7 @@ def plot_feature_rankings(
     ax.set_xlabel("Gini Importance", fontsize=12)
     paths.append(save_figure(fig, "feature_ranking_rf.png", output_dir))
 
-    # Ensemble chart
+    # 集成排名图
     fig, ax = plt.subplots(figsize=(10, 7))
     plot_df = ensemble_df.head(17).iloc[::-1]
     bars = ax.barh(

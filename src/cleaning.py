@@ -25,7 +25,7 @@ def compute_haversine_km(
     lat1: pd.Series, lng1: pd.Series, lat2: pd.Series, lng2: pd.Series
 ) -> np.ndarray:
     """Compute haversine distance in km between two sets of lat/lng coordinates."""
-    r = 6371.0  # Earth radius in km
+    r = 6371.0  # 地球半径，单位km
     lat1_r = np.radians(lat1.values)
     lat2_r = np.radians(lat2.values)
     dlat = np.radians(lat2.values - lat1.values)
@@ -43,10 +43,10 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
     """
     initial_rows = len(df)
 
-    # 1. Fix DST negative durations
+    # 1. 修复夏令时导致的负时长
     df = fix_dst_negative_durations(df)
 
-    # 2. Compute duration and distance
+    # 2. 计算骑行时长和Haversine距离
     df["duration_minutes"] = (
         df["ended_at"] - df["started_at"]
     ).dt.total_seconds() / 60.0
@@ -54,21 +54,21 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
         df["start_lat"], df["start_lng"], df["end_lat"], df["end_lng"]
     )
 
-    # 3. Remove rows missing end lat/lng (too few to matter)
+    # 3. 移除终点经纬度缺失的行（占比极少）
     missing_end_coords = df["end_lat"].isna() | df["end_lng"].isna()
     df = df[~missing_end_coords]
 
-    # 4. Remove duration outliers
+    # 4. 移除时长异常值（<1分钟或>24小时）
     df = df[df["duration_minutes"] >= MIN_DURATION_MINUTES]
     df = df[df["duration_minutes"] <= MAX_DURATION_MINUTES]
 
-    # 5. Remove rows with haversine=0 but different start/end station
+    # 5. 移除距离为0但起止站点不同的矛盾记录
     zero_dist_diff_station = (df["haversine_distance_km"] == 0) & (
         df["start_station_id"] != df["end_station_id"]
     )
     df = df[~zero_dist_diff_station]
 
-    # 6. IQR capping for distance
+    # 6. 对距离做 IQR 截尾
     q1_dist = df["haversine_distance_km"].quantile(0.25)
     q3_dist = df["haversine_distance_km"].quantile(0.75)
     iqr_dist = q3_dist - q1_dist
@@ -78,7 +78,7 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
         lower_dist, upper_dist
     )
 
-    # 7. IQR capping for duration (after outlier removal)
+    # 7. 对时长做 IQR 截尾（在异常值移除之后）
     q1_dur = df["duration_minutes"].quantile(0.25)
     q3_dur = df["duration_minutes"].quantile(0.75)
     iqr_dur = q3_dur - q1_dur
@@ -86,7 +86,7 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
     upper_dur = min(q3_dur + 1.5 * iqr_dur, MAX_DURATION_MINUTES)
     df["duration_minutes"] = df["duration_minutes"].clip(lower_dur, upper_dur)
 
-    # 8. Compute avg speed after capping
+    # 8. 截尾后计算平均骑行速度
     df["avg_speed_kmh"] = df["haversine_distance_km"] / (df["duration_minutes"] / 60.0)
     df["avg_speed_kmh"] = df["avg_speed_kmh"].clip(
         MIN_AVG_SPEED_KMH, MAX_AVG_SPEED_KMH

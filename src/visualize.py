@@ -9,7 +9,7 @@ _FONT_NAME: str | None = None
 
 def _find_chinese_font() -> str | None:
     """Find a Chinese font file on the system. Returns font name or None."""
-    # Strategy 1: use fm.findfont to locate actual font file
+    # 策略1：用 fm.findfont 查找实际字体文件路径
     for font_name in CHINESE_FONT_CANDIDATES:
         try:
             font_path = fm.findfont(font_name, fallback_to_default=False)
@@ -22,7 +22,7 @@ def _find_chinese_font() -> str | None:
                 pass
             return font_name
 
-    # Strategy 2: check available font names in fontManager
+    # 策略2：检查 fontManager 中已注册的字体名
     available = {f.name for f in fm.fontManager.ttflist}
     for font_name in CHINESE_FONT_CANDIDATES:
         if font_name in available:
@@ -65,11 +65,11 @@ def set_style():
     global _FONT_NAME
     sns.set_style("whitegrid")
     sns.set_palette("Set2")
-    # Re-assert Chinese font if it was already detected
+    # 如果已检测到中文字体则重新应用（seaborn 会重置字体）
     if _FONT_NAME is not None:
         _apply_chinese_font(_FONT_NAME)
     elif not hasattr(set_style, "_first_call"):
-        # On first call try to detect font AFTER seaborn reset
+        # 首次调用时，在 seaborn 重置字体后重新检测
         set_style._first_call = True
         font_name = _find_chinese_font()
         if font_name is not None:

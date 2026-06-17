@@ -12,7 +12,7 @@ def discover_csv_files(data_dir: str | None = None) -> dict[str, str]:
     files = sorted(glob.glob(pattern))
     result = {}
     for f in files:
-        month = os.path.basename(os.path.dirname(f))[:6]  # e.g. "202501"
+        month = os.path.basename(os.path.dirname(f))[:6]  # 目录名前6位，如 "202501"
         result[month] = f
     return result
 

@@ -16,7 +16,7 @@ def extract_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
     hour = df["started_at"].dt.hour.astype(float)
     feats["hour_sin"], feats["hour_cos"] = _cyclic_encode(hour, 24.0)
 
-    dow = df["started_at"].dt.dayofweek.astype(float)  # Mon=0, Sun=6
+    dow = df["started_at"].dt.dayofweek.astype(float)  # 周一=0, 周日=6
     feats["dayofweek_sin"], feats["dayofweek_cos"] = _cyclic_encode(dow, 7.0)
 
     month = df["started_at"].dt.month.astype(float)  # 1..12

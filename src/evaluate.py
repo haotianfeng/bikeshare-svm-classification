@@ -129,7 +129,7 @@ def plot_classification_report_heatmap(
     table_df = pd.DataFrame(rows)
     table_df.to_csv(f"{TABLES_DIR}/classification_report.csv", index=False)
 
-    # Heatmap of the three metrics
+    # 三项指标热力图
     plot_df = table_df.set_index("类别")[["精确率", "召回率", "F1"]]
     fig, ax = plt.subplots(figsize=(8, 5))
     sns.heatmap(
